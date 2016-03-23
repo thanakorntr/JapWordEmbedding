@@ -45,13 +45,12 @@ public class JapaneseWikiProcessor {
 
             wxsp.setPageCallback(new PageCallbackHandler() {
                 public void process(WikiPage page) {
-//                    System.out.println(page.getText());
                     try {
                         System.out.println(processDocument(page.getText()));
+//                        writePage(page.getText(), bufferedWriter);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-//                    processDocument(page.getText(), bufferedWriter);
                 }
             });
 
