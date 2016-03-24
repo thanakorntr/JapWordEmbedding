@@ -17,15 +17,11 @@ public class JapaneseWikiProcessor {
 
     private static String rawJapWikiFile = "/Users/thanakorntrakarnvanich/Desktop/W2V/Japanese/jawiki-20160305-pages-articles-multistream.xml";
 
-    private static String outputDirectoryPath = "/Users/thanakorntrakarnvanich/Desktop/W2V/Japanese/output/";
-
-//    private static String outputJapWikiFile = "/Users/thanakorntrakarnvanich/Desktop/W2V/Japanese/jawiki-20160305.txt";
+    private static String outputJapWikiFile = "/Users/thanakorntrakarnvanich/Desktop/W2V/Japanese/jawiki-20160305.txt";
 
     private static final String INVALID_TOKEN = "INVALID_TOKEN";
 
     private static final int minimumSentenceLength = 5;
-
-    private static long pageNum = 0l;
 
     private static Pattern japCharPattern
             = Pattern.compile("[^\\u3041-\\u3096\\u30A0-\\u30FF\\u3400-\\u4DB5\\u4E00-\\u9FCB\\uF900-\\uFA6A\\u2E80-\\u2FD5\\s]");
@@ -34,10 +30,7 @@ public class JapaneseWikiProcessor {
     public static void main(String[] args) throws IOException {
         if (args.length == 2) {
             rawJapWikiFile = args[0];
-            outputDirectoryPath = args[1];
-        }
-        if (!outputDirectoryPath.endsWith("/")) {
-            outputDirectoryPath = outputDirectoryPath + "/";
+            outputJapWikiFile = args[1];
         }
         parse();
     }
@@ -45,13 +38,15 @@ public class JapaneseWikiProcessor {
     private static void parse() throws IOException {
         WikiXMLParser wxsp = WikiXMLParserFactory.getSAXParser(rawJapWikiFile);
 
+        final BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputJapWikiFile));
+
         try {
             wxsp.setPageCallback(new PageCallbackHandler() {
                 public void process(WikiPage page) {
                     try {
                         String processedText = processDocument(page.getText());
-//                        System.out.println(processedText);
-                        writePage(processedText);
+                        bufferedWriter.write(processedText);
+                        bufferedWriter.write(System.lineSeparator());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -61,14 +56,8 @@ public class JapaneseWikiProcessor {
         }catch(Exception e) {
             e.printStackTrace();
         }
-    }
 
-    private static void writePage(String text) throws IOException {
-        String path = outputDirectoryPath + pageNum + ".txt";
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(path));
-        bufferedWriter.write(text);
         bufferedWriter.close();
-        pageNum++;
     }
 
     private static String processDocument(String text) throws IOException {
