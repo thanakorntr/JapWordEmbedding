@@ -23,7 +23,7 @@ public class JapaneseWikiProcessor {
 
     private static final int minimumSentenceLength = 5;
 
-    private static Pattern japCharPattern
+    private static Pattern nonJapCharPattern
             = Pattern.compile("[^\\u3041-\\u3096\\u30A0-\\u30FF\\u3400-\\u4DB5\\u4E00-\\u9FCB\\uF900-\\uFA6A\\u2E80-\\u2FD5\\s]");
 
 
@@ -61,7 +61,7 @@ public class JapaneseWikiProcessor {
     }
 
     private static String processDocument(String text) throws IOException {
-        text = text.replaceAll(japCharPattern.pattern(), " ");
+        text = text.replaceAll(nonJapCharPattern.pattern(), " ");
         text = text.replaceAll("\\s+", " ");
         return text;
     }
